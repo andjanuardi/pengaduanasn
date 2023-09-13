@@ -1,118 +1,288 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import { Form, Formik, Field, withFormik } from "formik";
+import Image from "next/image";
+import Swal from "sweetalert2";
 
 export default function Home() {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="p-4">
+      <div className="flex gap-5 items-center mb-5">
+        <div>
+          <img
+            style={{
+              margin: "8px auto 0px",
+              fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+              fontSize: 15,
+              textAlign: "justify",
+              display: "block",
+            }}
+            title=""
+            src="/logo-sml.png"
+            alt=""
+            width={75}
+            height={88}
+          />
+        </div>
+        <div>
+          <div>
+            <p>
+              <strong>
+                FORMULIR PENGADUAN APARATUR SIPIL NEGARA KABUPATEN SIMEULUE
+              </strong>
+            </p>
+            <p>
+              BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA KABUPATEN
+              SIMEULUE
+            </p>
+          </div>
         </div>
       </div>
+      <p style={{ textAlign: "justify" }}>Dengan hormat,</p>
+      <p style={{ textAlign: "justify" }} className="mb-4">
+        Bersama ini saya yang namanya tertera di bawah ini, melaporkan adanya
+        dugaan tindakan penyalahgunaan wewenang Aparatur Sipil Negara (ASN) yang
+        dilakukan oleh petugas/pegawai Kabupaten Simeulue.
+      </p>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <p style={{ textAlign: "justify" }}>
+        Adapun data diri saya dan kronologi kejadiannya adalah sebagai berikut :
+      </p>
+      <Formik
+        initialValues={{
+          i: true,
+          id: null,
+          judul_laporan: "",
+          terlapor: "",
+          kode_etik: false,
+          kedisiplinan: false,
+          mal_administrasi: false,
+          penyalahgunaan_wewenang: false,
+          perbuatan_tercela: false,
+          pelayanan_publik: false,
+          pelanggaran_sumpah: false,
+          pelanggaran_hukum: false,
+          lainnya: "",
+          nama_pelapor: "",
+          alamat_pelapor: "",
+          tlp_pelapor: "",
+          email: "",
+          keterangan: "",
+          file: "",
+        }}
+        onSubmit={async (value) => {
+          await fetch("/api/pengaduan", {
+            method: "POST",
+            body: JSON.stringify(value),
+          })
+            .then((e) => e.json())
+            .then((data) => {
+              if (data) {
+                Swal.fire(
+                  "Terima Kasih",
+                  "Pengaduan anda telah diterima",
+                  "success"
+                );
+              } else {
+                Swal.fire("Gagal", "Terjadi kesalahan", "error");
+              }
+            });
+        }}
+      >
+        <Form>
+          <div className="flex flex-col gap-3">
+            <table
+              style={{ width: "100%", borderCollapse: "collapse" }}
+              border={0}
+              cellPadding={3}
+              className="mt-5"
+            >
+              <tbody>
+                <tr>
+                  <td style={{ width: "433.2px" }}>
+                    <strong>
+                      Judul Laporan &nbsp;
+                      <span style={{ color: "#ff0000" }}>*</span>
+                    </strong>
+                  </td>
+                  <td style={{ width: "433.2px" }}>
+                    <strong>
+                      Nama ASN Terlapor &nbsp;
+                      <span style={{ color: "#ff0000" }}>*</span>
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: "433.2px" }}>
+                    <Field
+                      required
+                      name="judul_laporan"
+                      style={{ width: "100%" }}
+                      className="border border-black px-3 py-2"
+                      type="text"
+                    />
+                  </td>
+                  <td style={{ width: "433.2px" }}>
+                    <Field
+                      required
+                      name="terlapor"
+                      style={{ width: "100%" }}
+                      className="border border-black px-3 py-2"
+                      type="text"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <strong>Kategori Pengaduan Perilaku ASN</strong>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+            <div>
+              <span>Centang yang sesuai (boleh lebih dari 1)</span>
+              <table
+                style={{ width: "100%", borderCollapse: "collapse" }}
+                border={0}
+              >
+                <tbody>
+                  <tr>
+                    <td style={{ width: "50%" }}>
+                      <div>
+                        <Field name="kode_etik" type="checkbox" /> Kode Etik
+                      </div>
+                      <div>
+                        <Field name="kedisiplinan" type="checkbox" />{" "}
+                        Kedisiplinan
+                      </div>
+                      <div>
+                        <Field name="mal_administrasi" type="checkbox" /> Mal
+                        Administrasi
+                      </div>
+                      <div>
+                        <Field name="penyalahgunaan_wewenang" type="checkbox" />{" "}
+                        Penyalahgunaan Wewenang
+                      </div>
+                      <div>
+                        <Field name="perbuatan_tercela" type="checkbox" />{" "}
+                        Perbuatan Tercela
+                      </div>
+                    </td>
+                    <td style={{ width: "50%" }}>
+                      <div>
+                        <Field name="pelayanan_publik" type="checkbox" />{" "}
+                        Pelayanan Publik
+                      </div>
+                      <div>
+                        <Field name="pelanggaran_sumpah" type="checkbox" />{" "}
+                        Pelanggaran Sumpah Jabatan
+                      </div>
+                      <div>
+                        <Field name="pelanggaran_hukum" type="checkbox" />{" "}
+                        Pelanggaran Hukum
+                      </div>
+                      <div className="mt-2">Lainnya</div>
+                      <div>
+                        <Field
+                          style={{ width: "100%" }}
+                          name="lainnya"
+                          className="border border-black px-3 py-2"
+                          type="text"
+                          placeholder="Lainnya"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+            <div className="flex flex-col gap-3">
+              <div>
+                <strong>Identitas Pelapor</strong>
+              </div>
+              <div>
+                <div>
+                  Nama Lengkap&nbsp;<span style={{ color: "#ff0000" }}>*</span>
+                </div>
+                <Field
+                  required
+                  name="nama_pelapor"
+                  style={{ width: "100%" }}
+                  className="border border-black px-3 py-2"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div>
+                <div>Alamat</div>
+                <Field
+                  required
+                  name="alamat_pelapor"
+                  style={{ width: "100%" }}
+                  className="border border-black px-3 py-2"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div>
+                <div>
+                  Telepon/Hp&nbsp;<span style={{ color: "#ff0000" }}>*</span>
+                </div>
+                <Field
+                  required
+                  name="tlp_pelapor"
+                  style={{ width: "100%" }}
+                  className="border border-black px-3 py-2"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div>
+                <div>
+                  E-mail&nbsp;<span style={{ color: "#ff0000" }}>*</span>
+                </div>
+                <Field
+                  required
+                  name="email"
+                  style={{ width: "100%" }}
+                  className="border border-black px-3 py-2"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div>
+                <div>
+                  Keterangan Laporan&nbsp;
+                  <span style={{ color: "#ff0000" }}>*</span>
+                </div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+                <Field
+                  required
+                  component="textarea"
+                  name="keterangan"
+                  className="w-full  border border-black px-3 py-2"
+                />
+              </div>
+              <div>
+                <div>
+                  Upload Bukti&nbsp;<span style={{ color: "#ff0000" }}>*</span>
+                </div>
+                <Field
+                  required
+                  name="file"
+                  style={{ width: "100%" }}
+                  className="border border-black px-3 py-2"
+                  type="file"
+                  placeholder=""
+                />
+              </div>
+              <button
+                id="kirimlaporan "
+                type="submit"
+                className="btn btn-default save"
+              >
+                Kirim
+              </button>
+            </div>
+          </div>
+        </Form>
+      </Formik>
+    </div>
+  );
 }
