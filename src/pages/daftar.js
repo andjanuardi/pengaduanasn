@@ -99,7 +99,7 @@ export default function BackEnd() {
               ))}
             {data &&
               data.map((d, k) => (
-                <tr>
+                <tr key={k}>
                   <td>{k + 1}</td>
                   <td className="whitespace-nowrap">{dateToTable(d.tgl)}</td>
                   <td>{d.judul_laporan}</td>
